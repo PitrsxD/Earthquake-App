@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/earthquake_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/view_rychter_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_top_bottom"
+            android:layout_marginStart="@dimen/margin_start_end"
+            android:layout_marginTop="@dimen/margin_top_bottom"
+            android:background="@drawable/magnitude_circle"
+            android:gravity="center"
+            android:textColor="@color/white"
+            tools:text="0,0" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/view_near_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_start_end"
+                android:layout_marginTop="@dimen/margin_top_bottom"
+                android:gravity="center_horizontal"
+                android:textColor="@color/textColorEarthquakeDetails"
+                tools:text="City Name" />
+
+            <TextView
+                android:id="@+id/view_city_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_top_bottom"
+                android:layout_marginStart="@dimen/margin_start_end"
+                android:gravity="center_horizontal"
+                android:textColor="@color/textColorEarthquakeLocation"
+                tools:text="City Name" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/view_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_start_end"
+                android:layout_marginTop="@dimen/margin_top_bottom"
+                android:gravity="center_horizontal"
+                android:textColor="@color/textColorEarthquakeDetails"
+                tools:text="Feb 2, 2016" />
+
+            <TextView
+                android:id="@+id/view_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_top_bottom"
+                android:layout_marginStart="@dimen/margin_start_end"
+                android:gravity="center_horizontal"
+                android:textColor="@color/textColorEarthquakeDetails"
+                tools:text="13:50 AM" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="@dimen/margin_start_end"
+        android:layout_marginStart="@dimen/margin_start_end"
+        android:background="@color/colorPrimarySoft" />
+
+</LinearLayout>
