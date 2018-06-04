@@ -27,7 +27,11 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private List<EarthquakeObject> models = new ArrayList<>();
 
-    public EarthquakeAdapter(Context context, final List<EarthquakeObject> viewModels) {
+    /**
+     * Constructor for EarthquakeAdapter
+     * @param viewModels
+     */
+    public EarthquakeAdapter(final List<EarthquakeObject> viewModels) {
         if (viewModels != null) {
             this.models.addAll(viewModels);
         }
@@ -44,6 +48,10 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private double currentRichterScale;
         private GradientDrawable magnitudeDrawable;
 
+        /**
+         * Parsing variables views to views in earthquake_list.xml and constructing ViewHolder
+         * @param itemView
+         */
         public EarthquakeViewHolder(View itemView) {
             super(itemView);
             viewRichterScale = itemView.findViewById(R.id.view_rychter_scale);
@@ -54,6 +62,10 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             earthquakeBox = itemView.findViewById(R.id.earthquake_box);
         }
 
+        /**
+         * Binding data to variable views
+         * @param itemModel
+         */
         public void bindData(final EarthquakeObject itemModel) {
             currentRichterScale = itemModel.getRichterScale();
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -65,6 +77,7 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             splitCityName(itemModel);
             viewDate.setText(itemModel.getDate());
             viewTime.setText(itemModel.getTime());
+            // Giving each item onclick listener to open in intent attached URL
             earthquakeBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -75,6 +88,9 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
         }
 
+        /**
+         * Changing background of magnitude view according to measured magnitude
+         */
         private void getMagnitudeColor() {
             int magnitudeFloor = (int) Math.floor(currentRichterScale);
             switch (magnitudeFloor) {
@@ -111,7 +127,10 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         }
 
-
+        /**
+         *  Aqcuiring string with data of place and formating for 2 views
+         * @param itemModel
+         */
         private void splitCityName(final EarthquakeObject itemModel) {
             String stringToSplit = itemModel.getCityName();
             Log.i("City Name", stringToSplit);
@@ -129,11 +148,17 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-
+    /**
+     * Inflating RecyclerView with ViewHolder
+     * @param parent
+     * @param viewType
+     * @return
+     */
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return new EarthquakeViewHolder(view);
     }
+
 
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         ((EarthquakeViewHolder) holder).bindData(models.get(position));

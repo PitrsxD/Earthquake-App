@@ -49,7 +49,12 @@ public class EarthquakeActivity extends AppCompatActivity {
         earthquakeListView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
+    /**
+     * Create a list for @earthquakeListView and fill it with JSON response frome QueryUtils Class
+     * @return translated data from JSON in format of EarthquakeObject Class for EarthquakeAdapter
+     */
     private List<EarthquakeObject> earthquakes() {
+        //Call
         ArrayList<EarthquakeObject> earthquake = QueryUtils.extractEarthquakes();
         return earthquake;
 

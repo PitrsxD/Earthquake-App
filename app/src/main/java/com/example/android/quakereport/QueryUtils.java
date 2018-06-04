@@ -36,22 +36,35 @@ public final class QueryUtils {
     private QueryUtils() {
     }
 
+    /**
+     * Reading through JSON response
+     * @return
+     */
     public static ArrayList<EarthquakeObject> extractEarthquakes() {
         ArrayList<EarthquakeObject> earthquake = new ArrayList<>();
         try {
+            //Reading through response from level "features"
             JSONObject reader = new JSONObject(SAMPLE_JSON_RESPONSE);
             JSONArray feature = reader.getJSONArray("features");
+            // Loop to read through all "features" nodes
             for (int i = 0; i < feature.length(); i++) {
                 JSONObject o = feature.getJSONObject(i);
+                //Will acquire object from what we will extract data
                 JSONObject p = o.getJSONObject("properties");
+                // Data for magnitude
                 Double richterScale = p.getDouble("mag");
+                // Data for place of earthquake
                 String cityName = p.getString("place");
+                // Data for time of earthquake
                 Long date = p.getLong("time");
+                // Data for URL of earthquake on web of ****
                 String urlData = p.getString("url");
+                // Parsing data to EarthquakeObject class
                 earthquake.add(new EarthquakeObject(richterScale, cityName, date, urlData));
                 Log.i("queryUtils", earthquake.toString());
             }
         } catch (JSONException e) {
+            //In case of error Log will be printed
             Log.e("queryUtils", "Problemy with parsing the earthquake JSON result", e);
         }
         return earthquake;
