@@ -15,4 +15,5 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
+    <string name="no_content">No data to display</string>
 </resources>

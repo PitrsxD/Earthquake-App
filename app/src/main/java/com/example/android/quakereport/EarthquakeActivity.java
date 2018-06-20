@@ -23,7 +23,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.app.LoaderManager;
+import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +36,13 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     final String urls = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
 
     private ArrayList<EarthquakeObject> earthquakeList;
-    ListView earthquakeListView;
+    private ListView earthquakeListView;
 
     private EarthquakeAdapter earthquakeAdapter;
 
-    ArrayList<EarthquakeObject> data;
+    public static final String LOG_TAG = QueryUtils.class.getSimpleName();
+
+    private TextView emptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,26 +54,34 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(1, null, this).forceLoad();
 
-        earthquakeListView = (ListView) findViewById(R.id.list);
 
+        earthquakeListView = (ListView) findViewById(R.id.list);
+        emptyView = findViewById(R.id.empty_view);
+        earthquakeListView.setEmptyView(emptyView);
+        
     }
 
     @Override
     public Loader<ArrayList<EarthquakeObject>> onCreateLoader(int i, Bundle bundle) {
         return new EarthquakeLoader(this, urls);
+
     }
 
     @Override
     public void onLoadFinished(Loader<ArrayList<EarthquakeObject>> loader, ArrayList<EarthquakeObject> earthquakeList) {
+        Log.i("Loader","finished");
         earthquakeAdapter.clear();
         if (earthquakeList != null && !earthquakeList.isEmpty()) {
             earthquakeAdapter.addAll(earthquakeList);
             earthquakeListView.setAdapter(earthquakeAdapter);
+        } else{
+            emptyView.setText(R.string.no_content);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<EarthquakeObject>> loader) {
+        Log.i("Loader","reseted");
         earthquakeAdapter.clear();
     }
 }

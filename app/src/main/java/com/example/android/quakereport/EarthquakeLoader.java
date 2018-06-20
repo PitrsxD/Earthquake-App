@@ -19,6 +19,7 @@ public class EarthquakeLoader extends AsyncTaskLoader<ArrayList<EarthquakeObject
 
     @Override
     public ArrayList<EarthquakeObject> loadInBackground() {
+        Log.i("Loader","loaded");
         if (mUrl == null) {
             return null;
         }
