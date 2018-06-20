@@ -84,7 +84,7 @@ public class EarthquakeAdapter extends ArrayAdapter<EarthquakeObject> {
                 public void onClick(View v) {
                     Intent openUrl = new Intent(Intent.ACTION_VIEW);
                     openUrl.setData(Uri.parse(currentEarthObject.getURL()));
-                    convertView.getContext().startActivity(openUrl);
+                    getContext().startActivity(openUrl);
                 }
             });
 
