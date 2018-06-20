@@ -18,11 +18,12 @@ public class EarthquakeObject {
 
     /**
      * Constructor of EarthquakeObject for EarthquakeAdapter (ReyclerView)
+     *
      * @param richterScale - parsing magnitude from JSON
-     * @param cityName - parsing place from JSON
-     * @param date - parsing time from JSON and giving it proper and more understandable format
-     * @param urlData - parsin URL from JSON and provide it for intent to open original source of
-     * data in web browser
+     * @param cityName     - parsing place from JSON
+     * @param date         - parsing time from JSON and giving it proper and more understandable format
+     * @param urlData      - parsin URL from JSON and provide it for intent to open original source of
+     *                     data in web browser
      */
     public EarthquakeObject(Double richterScale, String cityName, long date, String urlData) {
         mRichterScale = richterScale;
@@ -55,5 +56,7 @@ public class EarthquakeObject {
         return simpleTimeToDisplay;
     }
 
-    public String getURL() { return mURLdata; }
+    public String getURL() {
+        return mURLdata;
+    }
 }

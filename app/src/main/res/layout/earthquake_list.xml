@@ -43,9 +43,9 @@
                 android:id="@+id/view_city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="200dp"
                 android:layout_marginBottom="@dimen/margin_top_bottom"
                 android:layout_marginStart="@dimen/margin_start_end"
+                android:maxWidth="200dp"
                 android:textColor="@color/textColorEarthquakeLocation"
                 tools:text="City Name" />
 
@@ -61,10 +61,10 @@
                 android:id="@+id/view_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="150dp"
                 android:layout_marginStart="@dimen/margin_start_end"
                 android:layout_marginTop="@dimen/margin_top_bottom"
                 android:gravity="center_horizontal"
+                android:minWidth="150dp"
                 android:textColor="@color/textColorEarthquakeDetails"
                 tools:text="Feb 2, 2016" />
 
@@ -72,10 +72,10 @@
                 android:id="@+id/view_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="150dp"
                 android:layout_marginBottom="@dimen/margin_top_bottom"
                 android:layout_marginStart="@dimen/margin_start_end"
                 android:gravity="center_horizontal"
+                android:minWidth="150dp"
                 android:textColor="@color/textColorEarthquakeDetails"
                 tools:text="13:50 AM" />
         </LinearLayout>

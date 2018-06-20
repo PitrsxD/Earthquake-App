@@ -16,7 +16,11 @@
 package com.example.android.quakereport;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -52,13 +56,21 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         earthquakeAdapter = new EarthquakeAdapter(this, new ArrayList<EarthquakeObject>());
 
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(1, null, this).forceLoad();
-
-
         earthquakeListView = (ListView) findViewById(R.id.list);
         emptyView = findViewById(R.id.empty_view);
         earthquakeListView.setEmptyView(emptyView);
+
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nInfo = cm.getActiveNetworkInfo();
+
+        if (nInfo != null && nInfo.isConnectedOrConnecting()) {
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(1, null, this).forceLoad();
+        } else {
+            emptyView.setText(R.string.no_internet);
+            loadingCircle.setVisibility(View.GONE);
+        }
 
     }
 
