@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <!-- Layout for a list of earthquakes -->
-<android.support.v7.widget.RecyclerView
+<ListView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list"
     android:orientation="vertical"

@@ -1,15 +1,22 @@
 package com.example.android.quakereport;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,69 +30,65 @@ import java.util.List;
  * Created by pitrs on 15.04.2018.
  */
 
-public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class EarthquakeAdapter extends ArrayAdapter<EarthquakeObject> {
 
     private List<EarthquakeObject> models = new ArrayList<>();
 
-    /**
-     * Constructor for EarthquakeAdapter
-     * @param viewModels
-     */
-    public EarthquakeAdapter(final List<EarthquakeObject> viewModels) {
-        if (viewModels != null) {
-            this.models.addAll(viewModels);
-        }
+    TextView viewNearTo;
+    TextView viewCityName;
+    double currentRichterScale;
+    int magnitudeColorResID = R.color.magnitude1;
+
+    public EarthquakeAdapter(Activity context, ArrayList<EarthquakeObject> earthquakes) {
+        super (context, 0, earthquakes);
     }
 
-    class EarthquakeViewHolder extends RecyclerView.ViewHolder {
-        public TextView viewRichterScale;
-        public TextView viewNearTo;
-        public TextView viewCityName;
-        public TextView viewDate;
-        public TextView viewTime;
-        public LinearLayout earthquakeBox;
-        private int magnitudeColorResID = R.color.magnitude1;
-        private double currentRichterScale;
-        private GradientDrawable magnitudeDrawable;
-
-        /**
-         * Parsing variables views to views in earthquake_list.xml and constructing ViewHolder
-         * @param itemView
-         */
-        public EarthquakeViewHolder(View itemView) {
-            super(itemView);
-            viewRichterScale = itemView.findViewById(R.id.view_rychter_scale);
-            viewNearTo = itemView.findViewById(R.id.view_near_to);
-            viewCityName = itemView.findViewById(R.id.view_city_name);
-            viewDate = itemView.findViewById(R.id.view_date);
-            viewTime = itemView.findViewById(R.id.view_time);
-            earthquakeBox = itemView.findViewById(R.id.earthquake_box);
+    @NonNull
+    @Override
+    public View getView (int position, @Nullable final View convertView, @NonNull ViewGroup parent) {
+        View listItemView = convertView;
+        if(listItemView == null) {
+            listItemView = LayoutInflater.from(getContext()).inflate(
+                    R.layout.earthquake_list, parent, false);
         }
+
+         TextView viewRichterScale = listItemView.findViewById(R.id.view_rychter_scale);
+         viewNearTo = listItemView.findViewById(R.id.view_near_to);
+         viewCityName = listItemView.findViewById(R.id.view_city_name);
+         TextView viewDate = listItemView.findViewById(R.id.view_date);
+         TextView viewTime = listItemView.findViewById(R.id.view_time);
+         LinearLayout earthquakeBox = listItemView.findViewById(R.id.earthquake_box);
+
+         GradientDrawable magnitudeDrawable;
+
 
         /**
          * Binding data to variable views
          * @param itemModel
          */
-        public void bindData(final EarthquakeObject itemModel) {
-            currentRichterScale = itemModel.getRichterScale();
+        final EarthquakeObject currentEarthObject = getItem(position);
+
+            currentRichterScale = currentEarthObject.getRichterScale();
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
             viewRichterScale.setText(decimalFormat.format(currentRichterScale));
             magnitudeDrawable = (GradientDrawable) viewRichterScale.getBackground();
             // Get the appropriate background color based on the current earthquake magnitude
             getMagnitudeColor();
             magnitudeDrawable.setColor(ContextCompat.getColor(viewRichterScale.getContext(), magnitudeColorResID));
-            splitCityName(itemModel);
-            viewDate.setText(itemModel.getDate());
-            viewTime.setText(itemModel.getTime());
+            splitCityName(currentEarthObject);
+            viewDate.setText(currentEarthObject.getDate());
+            viewTime.setText(currentEarthObject.getTime());
             // Giving each item onclick listener to open in intent attached URL
             earthquakeBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent openUrl = new Intent(Intent.ACTION_VIEW);
-                    openUrl.setData(Uri.parse(itemModel.getURL()));
-                    itemView.getContext().startActivity(openUrl);
+                    openUrl.setData(Uri.parse(currentEarthObject.getURL()));
+                    convertView.getContext().startActivity(openUrl);
                 }
             });
+
+            return listItemView;
         }
 
         /**
@@ -127,12 +130,8 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         }
 
-        /**
-         *  Aqcuiring string with data of place and formating for 2 views
-         * @param itemModel
-         */
-        private void splitCityName(final EarthquakeObject itemModel) {
-            String stringToSplit = itemModel.getCityName();
+        private void splitCityName(EarthquakeObject currentEarthObject) {
+            String stringToSplit = currentEarthObject.getCityName();
             Log.i("City Name", stringToSplit);
             if (stringToSplit.contains("of")) {
                 String parts[] = stringToSplit.split("of ");
@@ -142,35 +141,10 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 viewCityName.setText(part2);
             } else {
                 viewNearTo.setText("Near the");
-                viewCityName.setText(itemModel.getCityName());
+                viewCityName.setText(currentEarthObject.getCityName());
             }
 
         }
     }
 
-    /**
-     * Inflating RecyclerView with ViewHolder
-     * @param parent
-     * @param viewType
-     * @return
-     */
-    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return new EarthquakeViewHolder(view);
-    }
 
-
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        ((EarthquakeViewHolder) holder).bindData(models.get(position));
-    }
-
-    public int getItemCount() {
-        return models.size();
-    }
-
-    public int getItemViewType(final int position) {
-        return R.layout.earthquake_list;
-    }
-
-
-}

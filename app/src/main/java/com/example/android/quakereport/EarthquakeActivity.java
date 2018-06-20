@@ -15,48 +15,63 @@
  */
 package com.example.android.quakereport;
 
+import android.content.Context;
+
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.AdapterView;
+import android.app.LoaderManager;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<EarthquakeObject>> {
 
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    // URL to get JSON data for ArrayList
+    final String urls = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
+
+    private ArrayList<EarthquakeObject> earthquakeList;
+    ListView earthquakeListView;
+
+    private EarthquakeAdapter earthquakeAdapter;
+
+    ArrayList<EarthquakeObject> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.earthquake_activity);
+         setContentView(R.layout.earthquake_activity);
 
-        // Create a fake list of earthquake locations.
+        earthquakeAdapter = new EarthquakeAdapter(this,new ArrayList<EarthquakeObject>());
 
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(1, null, this).forceLoad();
 
-        // Find a reference to the {@link ListView} in the layout
-        RecyclerView earthquakeListView = findViewById(R.id.list);
+        earthquakeListView = (ListView) findViewById(R.id.list);
 
-        // Create a new {@link ArrayAdapter} of earthquakes
-        EarthquakeAdapter earthquakeAdapter = new EarthquakeAdapter(this, earthquakes());
-
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        earthquakeListView.setAdapter(earthquakeAdapter);
-        earthquakeListView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
-    /**
-     * Create a list for @earthquakeListView and fill it with JSON response frome QueryUtils Class
-     * @return translated data from JSON in format of EarthquakeObject Class for EarthquakeAdapter
-     */
-    private List<EarthquakeObject> earthquakes() {
-        //Call
-        ArrayList<EarthquakeObject> earthquake = QueryUtils.extractEarthquakes();
-        return earthquake;
+    @Override
+    public Loader<ArrayList<EarthquakeObject>> onCreateLoader(int i, Bundle bundle) {
+        return new EarthquakeLoader(this, urls);
+    }
 
+    @Override
+    public void onLoadFinished(Loader<ArrayList<EarthquakeObject>> loader, ArrayList<EarthquakeObject> earthquakeList) {
+        earthquakeAdapter.clear();
+        if (earthquakeList != null && !earthquakeList.isEmpty()) {
+            earthquakeAdapter.addAll(earthquakeList);
+            earthquakeListView.setAdapter(earthquakeAdapter);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<EarthquakeObject>> loader) {
+        earthquakeAdapter.clear();
     }
 }
+
+
