@@ -15,9 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by pitrs on 01.05.2018.
@@ -33,26 +30,26 @@ public final class QueryUtils {
      * directly from the class name QueryUtils (and an object instance of QueryUtils is not needed).
      */
 
-    public static ArrayList<EarthquakeObject> fetchEarthquakes (String requestURL){
+    public static ArrayList<EarthquakeObject> fetchEarthquakes(String requestURL) {
 
         URL url = createURL(requestURL);
 
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
-        } catch (IOException e){
-            Log.e(LOG_TAG,"Error with closin inputStream",e);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error with closin inputStream", e);
         }
         ArrayList<EarthquakeObject> earthquake = extractEarthquakes(jsonResponse);
         return earthquake;
     }
 
-    private static URL createURL (String stringURL) {
+    private static URL createURL(String stringURL) {
         URL url = null;
         try {
             url = new URL(stringURL);
-        }   catch (MalformedURLException e) {
-            Log.e(LOG_TAG,"Error with URL", e);
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Error with URL", e);
         }
         return url;
     }
@@ -68,6 +65,11 @@ public final class QueryUtils {
         InputStream inputStream = null;
 
         try {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setReadTimeout(10000/*miliseconds*/);
             urlConnection.setConnectTimeout(15000/*miliseconds*/);
@@ -83,10 +85,11 @@ public final class QueryUtils {
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem with retrieving JSON data", e);
-            } finally {
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
-        } if (inputStream != null) {
+            }
+            if (inputStream != null) {
                 inputStream.close();
             }
 
@@ -94,21 +97,23 @@ public final class QueryUtils {
         return jsonResponse;
     }
 
-    private static String readFromStream (InputStream inputStream) throws IOException {
-    StringBuilder stringBuilderOutput = new StringBuilder();
-    if (inputStream != null) {
-        InputStreamReader streamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-        BufferedReader bufferedReader = new BufferedReader(streamReader);
-        String line = bufferedReader.readLine();
-        while (line != null) {
-            stringBuilderOutput.append(line);
-            line = bufferedReader.readLine();
+    private static String readFromStream(InputStream inputStream) throws IOException {
+        StringBuilder stringBuilderOutput = new StringBuilder();
+        if (inputStream != null) {
+            InputStreamReader streamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            BufferedReader bufferedReader = new BufferedReader(streamReader);
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                stringBuilderOutput.append(line);
+                line = bufferedReader.readLine();
+            }
         }
+        return stringBuilderOutput.toString();
     }
-    return stringBuilderOutput.toString();
-    }
+
     /**
      * Reading through JSON response
+     *
      * @return
      */
     public static ArrayList<EarthquakeObject> extractEarthquakes(String jsonResponse) {

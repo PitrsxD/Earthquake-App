@@ -15,20 +15,17 @@
  */
 package com.example.android.quakereport;
 
-import android.content.Context;
-
+import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.app.LoaderManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<EarthquakeObject>> {
 
@@ -44,12 +41,16 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     private TextView emptyView;
 
+    private ProgressBar loadingCircle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         setContentView(R.layout.earthquake_activity);
+        setContentView(R.layout.earthquake_activity);
+        loadingCircle = findViewById(R.id.loading_spinner);
+        loadingCircle.setVisibility(View.VISIBLE);
 
-        earthquakeAdapter = new EarthquakeAdapter(this,new ArrayList<EarthquakeObject>());
+        earthquakeAdapter = new EarthquakeAdapter(this, new ArrayList<EarthquakeObject>());
 
         LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(1, null, this).forceLoad();
@@ -58,7 +59,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         earthquakeListView = (ListView) findViewById(R.id.list);
         emptyView = findViewById(R.id.empty_view);
         earthquakeListView.setEmptyView(emptyView);
-        
+
     }
 
     @Override
@@ -69,19 +70,21 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<ArrayList<EarthquakeObject>> loader, ArrayList<EarthquakeObject> earthquakeList) {
-        Log.i("Loader","finished");
+        Log.i("Loader", "finished");
         earthquakeAdapter.clear();
         if (earthquakeList != null && !earthquakeList.isEmpty()) {
             earthquakeAdapter.addAll(earthquakeList);
             earthquakeListView.setAdapter(earthquakeAdapter);
-        } else{
+            loadingCircle.setVisibility(View.GONE);
+        } else {
+            loadingCircle.setVisibility(View.GONE);
             emptyView.setText(R.string.no_content);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<EarthquakeObject>> loader) {
-        Log.i("Loader","reseted");
+        Log.i("Loader", "reseted");
         earthquakeAdapter.clear();
     }
 }
