@@ -65,11 +65,6 @@ public final class QueryUtils {
         InputStream inputStream = null;
 
         try {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setReadTimeout(10000/*miliseconds*/);
             urlConnection.setConnectTimeout(15000/*miliseconds*/);
